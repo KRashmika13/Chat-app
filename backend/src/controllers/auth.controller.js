@@ -1,3 +1,4 @@
+import { generateToken } from "../lib/util.js";
 import User from "../models/users.moddle.js";
 import bcrypt from 'bcrypt';
 
@@ -23,13 +24,23 @@ export const signup = async(req, res) => {
         });
 
         if(newUser){
+            generateToken(newUser._id, res);
+            await newUser.save();
 
+            res.status(201).json({
+                _id: newUser._id,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                profilePic: newUser.profilePic,
+                token: generateToken(newUser._id, res)
+            })
         }else{
             return res.status(400).json({message: "Invalid user data. Please try again."})
         }
 
     }catch{
-
+        console.log("Error in signup controller", error);
+        return res.status(500).json({message: "Internal server error"})
     }
 }
 
