@@ -1,6 +1,6 @@
 import { generateToken } from "../lib/util.js";
 import User from "../models/users.moddle.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const signup = async(req, res) => {
     const { fullName, email, password} = req.body;
@@ -38,7 +38,7 @@ export const signup = async(req, res) => {
             return res.status(400).json({message: "Invalid user data. Please try again."});
         }
 
-    }catch{
+    }catch(error){
         console.log("Error in signup controller", error);
         return res.status(500).json({message: "Internal server error"});
     }
@@ -79,7 +79,7 @@ export const logout = (req, res) => {
     try {
         res.cookie("token", "", {maxAge: 0});
         return res.status(200).json({message: "Logout successful"});
-    } catch {
+    } catch(error) {
         console.log("Error in logout controller", error);
         return res.status(500).json({message: "Internal server error"});
     }
